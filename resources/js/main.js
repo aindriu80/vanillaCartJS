@@ -2,14 +2,12 @@
 
 let cart = [];
 const cartDOM = document.querySelector(".cart");
-const addToCartButtonDOM = document.querySelectorAll(
+const addToCartButtonsDOM = document.querySelectorAll(
   '[data-action="ADD_TO_CART"]'
 );
 
-// console.log(addToCartButton);
-addToCartButtonDOM.forEach(addToCartButtonDOM => {
+addToCartButtonsDOM.forEach(addToCartButtonDOM => {
   addToCartButtonDOM.addEventListener("click", () => {
-    // console.log(addToCartButtonDOM.parentNode);
     const productDOM = addToCartButtonDOM.parentNode;
     const product = {
       image: productDOM.querySelector(".product__image").getAttribute("src"),
@@ -24,19 +22,18 @@ addToCartButtonDOM.forEach(addToCartButtonDOM => {
       cartDOM.insertAdjacentHTML(
         "beforeend",
         `
-      <div class="cart__item>
-      <img class="cart__item__image" src="${product.image}" alt="${
+        <div class="cart__item">
+          <img class="cart__item__image" src="${product.image}" alt="${
           product.name
         }">
-      <h3 class="class__item__name">${product.name}</h3>
-      <h3 class="class__item__price">${product.price}</h3>
-      </div>
+          <h3 class="class__item__name">${product.name}</h3>
+          <h3 class="class__item__price">${product.price}</h3>
+        </div>
       `
       );
+
       cart.push(product);
       addToCartButtonDOM.innerText = "In Cart";
-
-      // console.log(cart);
     }
   });
 });
