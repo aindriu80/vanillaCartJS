@@ -29,7 +29,7 @@ addToCartButtonsDOM.forEach(addToCartButtonDOM => {
         }">
           <h3 class="cart__item__name">${product.name}</h3>
           <h3 class="cart__item__price">${product.price}</h3>
-          <button class="btn btn--primary btn--small" data-action="DECREASE_ITEM">&minus;</button>
+          <button class="btn btn--primary btn--small btn--danger" data-action="DECREASE_ITEM">&minus;</button>
           <h3 class="cart__item__quantity">${product.quantity}</h3>
           <button class="btn btn--primary btn--small" data-action="INCREASE_ITEM">&plus;</button>
           <button class="btn btn--danger btn--small" data-action="REMOVE_ITEM">&times;</button>
@@ -39,6 +39,7 @@ addToCartButtonsDOM.forEach(addToCartButtonDOM => {
 
       cart.push(product);
       addToCartButtonDOM.innerText = "In Cart";
+      addToCartButtonDOM.disabled = true;
 
       const cartItemsDOM = cartDOM.querySelectorAll(".cart__item");
       cartItemsDOM.forEach(cartItemDOM => {
@@ -55,6 +56,52 @@ addToCartButtonsDOM.forEach(addToCartButtonDOM => {
                   cartItemDOM.querySelector(
                     ".cart__item__quantity"
                   ).innerText = ++cartItem.quantity;
+                  cartItemDOM
+                    .querySelector('[data-action="DECREASE_ITEM"]')
+                    .classList.remove("btn--danger");
+                }
+              });
+            });
+        }
+        {
+          cartItemDOM
+            .querySelector('[data-action="DECREASE_ITEM"]')
+            .addEventListener("click", () => {
+              cart.forEach(cartItem => {
+                if (cartItem.name === product.name) {
+                  if (cartItem.quantity > 1) {
+                    cartItemDOM.querySelector(
+                      ".cart__item__quantity"
+                    ).innerText = --cartItem.quantity;
+                  } else {
+                    cartItemDOM.classList.add("cart__item--removed");
+                    setTimeout(() => cartItemDOM.remove(), 250);
+                    cart = cart.filter(
+                      cartItem => cartItem.name !== product.name
+                    );
+                    addToCartButtonDOM.innerText = "Add to Cart";
+                    addToCartButtonDOM.disabled = false;
+                  }
+                  if (cartItem.quantity === 1) {
+                    cartItemDOM
+                      .querySelector('[data-action="DECREASE_ITEM"]')
+                      .classList.add("btn--danger");
+                  }
+                }
+              });
+            });
+          cartItemDOM
+            .querySelector('[data-action="REMOVE_ITEM"]')
+            .addEventListener("click", () => {
+              cart.forEach(cartItem => {
+                if (cartItem.name === product.name) {
+                  cartItemDOM.classList.add("cart__item--removed");
+                  setTimeout(() => cartItemDOM.remove(), 250);
+                  cart = cart.filter(
+                    cartItem => cartItem.name !== product.name
+                  );
+                  addToCartButtonDOM.innerText = "Add to Cart";
+                  addToCartButtonDOM.disabled = false;
                 }
               });
             });
