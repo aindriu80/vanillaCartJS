@@ -1,6 +1,7 @@
 "use strict";
 
-let cart = [];
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
 const cartDOM = document.querySelector(".cart");
 const addToCartButtonsDOM = document.querySelectorAll(
   '[data-action="ADD_TO_CART"]'
