@@ -29,6 +29,16 @@ if (cart.length > 0) {
       </div>
     `
     );
+    addToCartButtonsDOM.forEach(addToCartButtonDOM => {
+      const productDOM = addToCartButtonDOM.parentNode;
+
+      if (
+        productDOM.querySelector(".product__name").innerText === product.name
+      ) {
+        addToCartButtonDOM.innerText = "In Cart";
+        addToCartButtonDOM.disabled = true;
+      }
+    });
   });
 }
 addToCartButtonsDOM.forEach(addToCartButtonDOM => {
