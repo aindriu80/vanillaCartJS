@@ -22,7 +22,7 @@ if (cart.length > 0) {
       if (
         productDOM.querySelector(".product__name").innerText === product.name
       ) {
-        handleActionButtons(addToCartButtonsDOM, product);
+        handleActionButtons(addToCartButtonDOM, product);
       }
     });
   });
@@ -44,7 +44,7 @@ addToCartButtonsDOM.forEach(addToCartButtonDOM => {
       insertItemToDOM(product);
       cart.push(product);
       localStorage.setItem("cart", JSON.stringify(cart));
-      handleActionButtons(addToCartButtonsDOM, product);
+      handleActionButtons(addToCartButtonDOM, product);
     }
   });
 });
@@ -81,61 +81,62 @@ function handleActionButtons(addToCartButtonDOM, product) {
     ) {
       cartItemDOM
         .querySelector('[data-action="INCREASE_ITEM"]')
-        .addEventListener("click", () => {
-          // console.log(cartItemDOM);
-          cart.forEach(cartItem => {
-            if (cartItem.name === product.name) {
-              cartItemDOM.querySelector(
-                ".cart__item__quantity"
-              ).innerText = ++cartItem.quantity;
-              cartItemDOM
-                .querySelector('[data-action="DECREASE_ITEM"]')
-                .classList.remove("btn--danger");
-              localStorage.setItem("cart", JSON.stringify(cart));
-            }
-          });
-        });
+        .addEventListener("click", () => increaseItem(product, cartItemDOM));
 
       cartItemDOM
         .querySelector('[data-action="DECREASE_ITEM"]')
-        .addEventListener("click", () => {
-          cart.forEach(cartItem => {
-            if (cartItem.name === product.name) {
-              if (cartItem.quantity > 1) {
-                cartItemDOM.querySelector(
-                  ".cart__item__quantity"
-                ).innerText = --cartItem.quantity;
-                localStorage.setItem("cart", JSON.stringify(cart));
-              } else {
-                cartItemDOM.classList.add("cart__item--removed");
-                setTimeout(() => cartItemDOM.remove(), 250);
-                cart = cart.filter(cartItem => cartItem.name !== product.name);
-                localStorage.setItem("cart", JSON.stringify(cart));
-                addToCartButtonDOM.innerText = "Add to Cart";
-                addToCartButtonDOM.disabled = false;
-              }
-              if (cartItem.quantity === 1) {
-                cartItemDOM
-                  .querySelector('[data-action="DECREASE_ITEM"]')
-                  .classList.add("btn--danger");
-              }
-            }
-          });
-        });
+        .addEventListener("click", () =>
+          decreaseItem(product, cartItemDOM, addToCartButtonDOM)
+        );
+
       cartItemDOM
         .querySelector('[data-action="REMOVE_ITEM"]')
-        .addEventListener("click", () => {
-          cart.forEach(cartItem => {
-            if (cartItem.name === product.name) {
-              cartItemDOM.classList.add("cart__item--removed");
-              setTimeout(() => cartItemDOM.remove(), 250);
-              cart = cart.filter(cartItem => cartItem.name !== product.name);
-              localStorage.setItem("cart", JSON.stringify(cart));
-              addToCartButtonDOM.innerText = "Add to Cart";
-              addToCartButtonDOM.disabled = false;
-            }
-          });
-        });
+        .addEventListener("click", () =>
+          removeItem(product, cartItemDOM, addToCartButtonDOM)
+        );
     }
   });
+}
+
+function increaseItem(product, cartItemDOM) {
+  cart.forEach(cartItem => {
+    if (cartItem.name === product.name) {
+      cartItemDOM.querySelector(
+        ".cart__item__quantity"
+      ).innerText = ++cartItem.quantity;
+      cartItemDOM
+        .querySelector('[data-action="DECREASE_ITEM"]')
+        .classList.remove("btn--danger");
+      localStorage.setItem("cart", JSON.stringify(cart));
+    }
+  });
+}
+
+function decreaseItem(product, cartItemDOM, addToCartButtonDOM) {
+  cart.forEach(cartItem => {
+    if (cartItem.name === product.name) {
+      if (cartItem.quantity > 1) {
+        cartItemDOM.querySelector(
+          ".cart__item__quantity"
+        ).innerText = --cartItem.quantity;
+        localStorage.setItem("cart", JSON.stringify(cart));
+      } else {
+        removeItem(product, cartItemDOM, addToCartButtonDOM);
+      }
+      if (cartItem.quantity === 1) {
+        cartItemDOM
+          .querySelector('[data-action="DECREASE_ITEM"]')
+          .classList.add("btn--danger");
+      }
+    }
+  });
+}
+
+function removeItem(product, cartItemDOM, addToCartButtonDOM) {
+  cartItemDOM.classList.add("cart__item--removed");
+  setTimeout(() => cartItemDOM.remove(), 250);
+  cart = cart.filter(cartItem => cartItem.name !== product.name);
+  localStorage.setItem("cart", JSON.stringify(cart));
+  addToCartButtonDOM.innerText = "Add to Cart";
+  addToCartButtonDOM.disabled = false;
 }
