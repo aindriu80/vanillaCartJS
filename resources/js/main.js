@@ -68,6 +68,17 @@ function insertItemToDOM(product) {
     </div>
   `
   );
+  if (document.querySelector(".cart-footer") == null) {
+    cartDOM.insertAdjacentHTML(
+      "afterend",
+      `
+    <div class="cart-footer">
+    <button class="btn btn--danger" data-action="CLEAR_CART">Clear Cart</button>
+    <button class="btn btn--primary" data-action="CHECKOUT">Pay</button>
+    </div>
+    `
+    );
+  }
 }
 
 function handleActionButtons(addToCartButtonDOM, product) {
@@ -139,4 +150,8 @@ function removeItem(product, cartItemDOM, addToCartButtonDOM) {
   localStorage.setItem("cart", JSON.stringify(cart));
   addToCartButtonDOM.innerText = "Add to Cart";
   addToCartButtonDOM.disabled = false;
+
+  if (cart.length < 1) {
+    document.querySelector(".cart-footer").remove();
+  }
 }
