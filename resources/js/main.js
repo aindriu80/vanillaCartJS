@@ -43,8 +43,7 @@ addToCartButtonsDOM.forEach(addToCartButtonDOM => {
     if (!isInCart) {
       insertItemToDOM(product);
       cart.push(product);
-      localStorage.setItem("cart", JSON.stringify(cart));
-      countCartTotal();
+      saveCart();
       handleActionButtons(addToCartButtonDOM, product);
     }
   });
@@ -109,8 +108,7 @@ function increaseItem(product, cartItemDOM) {
       cartItemDOM
         .querySelector('[data-action="DECREASE_ITEM"]')
         .classList.remove("btn--danger");
-      localStorage.setItem("cart", JSON.stringify(cart));
-      countCartTotal();
+      saveCart();
     }
   });
 }
@@ -122,8 +120,7 @@ function decreaseItem(product, cartItemDOM, addToCartButtonDOM) {
         cartItemDOM.querySelector(
           ".cart__item__quantity"
         ).innerText = --cartItem.quantity;
-        localStorage.setItem("cart", JSON.stringify(cart));
-        countCartTotal();
+        saveCart();
       } else {
         removeItem(product, cartItemDOM, addToCartButtonDOM);
       }
@@ -140,7 +137,7 @@ function removeItem(product, cartItemDOM, addToCartButtonDOM) {
   cartItemDOM.classList.add("cart__item--removed");
   setTimeout(() => cartItemDOM.remove(), 250);
   cart = cart.filter(cartItem => cartItem.name !== product.name);
-  localStorage.setItem("cart", JSON.stringify(cart));
+  saveCart();
   countCartTotal();
   addToCartButtonDOM.innerText = "Add to Cart";
   addToCartButtonDOM.disabled = false;
@@ -199,4 +196,9 @@ function countCartTotal() {
     '[data-action="CHECKOUT"]'
   ).innerText = `Pay $${cartTotal}`;
   console.log(cartTotal);
+}
+
+function saveCart() {
+  localStorage.setItem("cart", JSON.stringify(cart));
+  countCartTotal();
 }
