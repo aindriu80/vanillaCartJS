@@ -159,10 +159,10 @@ function addCartFooter() {
     `
     );
     document
-      .querySelector('[data-action="CLEAR_CART"')
+      .querySelector('[data-action="CLEAR_CART"]')
       .addEventListener("click", () => clearCart());
     document
-      .querySelector('[data-action="CLEAR_CART"')
+      .querySelector('[data-action="CHECKOUT"]')
       .addEventListener("click", () => checkout());
   }
 }
@@ -183,15 +183,40 @@ function clearCart() {
   });
 }
 
-function checkout() {}
+function checkout() {
+  let paypalFormHTML = `
+  <form id="paypal-form" action="https://www.paypal.com/cgi-bin/webscr" method="post">
+  <input type="hidden" name="cmd" value="_cart">
+  <input type="hidden" name="upload" value="1">
+  <input type="hidden" name="business" value="aindriu80@yahoo.com">
+  `;
+
+  cart.forEach((cartItem, index) => {
+    ++index;
+    paypalFormHTML += `
+      <input type="hidden" name="item_name_${index}" value="${cartItem.name}">
+      <input type="hidden" name="amount_${index}" value="${cartItem.price}">
+      <input type="hidden" name="quantity_${index}" value="${
+      cartItem.quantity
+    }">
+    `;
+  });
+
+  paypalFormHTML += `
+  <input type="submit" value="PayPal">
+  </form>
+  <div class="overlay"></div>
+`;
+
+  document
+    .querySelector("body")
+    .insertAdjacentHTML("beforeend", paypalFormHTML);
+  document.getElementById("paypal-form").submit();
+}
 
 function countCartTotal() {
   let cartTotal = 0;
-
-  cart.forEach(cartItem => {
-    cartTotal += cartItem.quantity * cartItem.price;
-  });
-
+  cart.forEach(cartItem => (cartTotal += cartItem.quantity * cartItem.price));
   document.querySelector(
     '[data-action="CHECKOUT"]'
   ).innerText = `Pay $${cartTotal}`;
